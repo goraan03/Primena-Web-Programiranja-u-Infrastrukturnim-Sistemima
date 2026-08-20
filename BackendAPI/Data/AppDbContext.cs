@@ -9,7 +9,6 @@ namespace BackendAPI.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<Travel> Travels { get; set; }
         public DbSet<Destination> Destinations { get; set; }
         public DbSet<Activity> Activities { get; set; }
@@ -18,19 +17,6 @@ namespace BackendAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            // User configurations
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
-
-            // Travel configurations
-            modelBuilder.Entity<Travel>()
-                .HasOne(t => t.User)
-                .WithMany(u => u.Travels)
-                .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             // Destination configurations
             modelBuilder.Entity<Destination>()
                 .HasOne(d => d.Travel)

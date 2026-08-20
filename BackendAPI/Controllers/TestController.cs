@@ -22,7 +22,6 @@ namespace BackendAPI.Controllers
         {
             try
             {
-                var userCount = await _db.Users.CountAsync();
                 var travelCount = await _db.Travels.CountAsync();
                 var destinationCount = await _db.Destinations.CountAsync();
                 var activityCount = await _db.Activities.CountAsync();
@@ -34,7 +33,6 @@ namespace BackendAPI.Controllers
                     Message = "Database connection successful!",
                     Tables = new
                     {
-                        Users = userCount,
                         Travels = travelCount,
                         Destinations = destinationCount,
                         Activities = activityCount,

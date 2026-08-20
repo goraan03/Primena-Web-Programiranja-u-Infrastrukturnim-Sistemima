@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
 
-namespace BackendAPI.Data.Entities
+namespace AuthService.Data.Entities
 {
     [Table("Users")]
     public class User
@@ -25,11 +24,8 @@ namespace BackendAPI.Data.Entities
 
         [Required]
         [MaxLength(20)]
-        public string Role { get; set; } = "USER"; // USER, ADMIN
+        public string Role { get; set; } = "USER";
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation properties
-        public virtual ICollection<Travel> Travels { get; set; }
     }
 }

@@ -37,8 +37,6 @@ namespace BackendAPI.Data.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
 
         public virtual ICollection<Destination> Destinations { get; set; }
         public virtual ICollection<Activity> Activities { get; set; }

@@ -13,6 +13,7 @@ namespace BackendAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly INotificationService _notificationService;
 
         public AuthController()
         {
@@ -21,6 +22,8 @@ namespace BackendAPI.Controllers
             var proxyFactory = new ServiceProxyFactory(c => clientFactory);
 
             _authService = proxyFactory.CreateServiceProxy<IAuthService>(new Uri("fabric:/TravelPlannerBackend/AuthService"));
+
+            _notificationService = proxyFactory.CreateServiceProxy<INotificationService>(new Uri("fabric:/TravelPlannerBackend/NotificationService"));
         }
 
         [HttpPost("register")]
@@ -29,6 +32,14 @@ namespace BackendAPI.Controllers
             try
             {
                 var user = await _authService.RegisterAsync(request);
+                try
+                {
+                    await _notificationService.SendWelcomeEmailAsync(user.Email, user.Name);
+                }
+                catch
+                {
+                    
+                }
                 return Ok(user);
             }
             catch (Exception ex)

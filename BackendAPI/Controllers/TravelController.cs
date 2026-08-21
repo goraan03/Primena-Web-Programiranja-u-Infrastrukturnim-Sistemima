@@ -15,6 +15,7 @@ namespace BackendAPI.Controllers
     public class TravelController : ControllerBase
     {
         private readonly ITravelService _travelService;
+        private readonly INotificationService _notificationService;
 
         public TravelController()
         {
@@ -24,6 +25,7 @@ namespace BackendAPI.Controllers
 
             _travelService = proxyFactory.CreateServiceProxy<ITravelService>(
                 new Uri("fabric:/TravelPlannerBackend/TravelService"));
+            _notificationService = proxyFactory.CreateServiceProxy<INotificationService>(new Uri("fabric:/TravelPlannerBackend/NotificationService"));
         }
 
         private int CurrentUserId =>
@@ -44,11 +46,32 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Create(TravelDto dto)
         {
             dto.UserId = CurrentUserId;
-            try { return Ok(await _travelService.CreateTravelAsync(dto)); }
-            catch (Exception ex) { return BadRequest(new { error = ex.InnerException?.Message ?? ex.Message }); }
+
+            TravelDto created;
+            try
+            {
+                created = await _travelService.CreateTravelAsync(dto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.InnerException?.Message ?? ex.Message });
+            }
+
+            try
+            {
+                var email = User.FindFirstValue(ClaimTypes.Email);
+                await _notificationService.SendTravelCreatedEmailAsync(email, created.Name);
+            }
+            catch
+            {
+                
+            }
+
+            return Ok(created);
         }
 
         [HttpPut("{id}")]

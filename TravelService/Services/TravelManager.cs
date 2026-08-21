@@ -291,5 +291,66 @@ namespace TravelService.Services
             Description = e.Description,
             TravelId = e.TravelId
         };
+
+        public async Task<BudgetSummaryDto> GetBudgetSummaryAsync(int travelId)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var travel = await db.Travels.FindAsync(travelId);
+            if (travel == null) throw new KeyNotFoundException("Putovanje nije pronađeno.");
+
+            var expenses = await db.Expenses.Where(e => e.TravelId == travelId).ToListAsync();
+            var totalSpent = expenses.Sum(e => e.Amount);
+
+            return new BudgetSummaryDto
+            {
+                TravelId = travelId,
+                TotalBudget = travel.Budget,
+                TotalSpent = totalSpent,
+                RemainingBudget = travel.Budget - totalSpent,
+                ByCategory = expenses.GroupBy(e => e.Category)
+                    .Select(g => new CategorySummaryDto { Category = g.Key, Total = g.Sum(e => e.Amount) })
+                    .ToList()
+            };
+        }
+
+        // ---------- Checklist CRUD ----------
+
+        public async Task<List<ChecklistItemDto>> GetChecklistAsync(int travelId)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            return await db.ChecklistItems.Where(c => c.TravelId == travelId)
+                .Select(c => new ChecklistItemDto { Id = c.Id, Name = c.Name, IsCompleted = c.IsCompleted, TravelId = c.TravelId })
+                .ToListAsync();
+        }
+
+        public async Task<ChecklistItemDto> CreateChecklistItemAsync(ChecklistItemDto dto)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var entity = new ChecklistItem { Name = dto.Name, TravelId = dto.TravelId, IsCompleted = false };
+            db.ChecklistItems.Add(entity);
+            await db.SaveChangesAsync();
+            return new ChecklistItemDto { Id = entity.Id, Name = entity.Name, IsCompleted = entity.IsCompleted, TravelId = entity.TravelId };
+        }
+
+        public async Task<ChecklistItemDto> ToggleChecklistItemAsync(int id)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var entity = await db.ChecklistItems.FindAsync(id);
+            if (entity == null) throw new KeyNotFoundException("Stavka nije pronađena.");
+            entity.IsCompleted = !entity.IsCompleted;
+            await db.SaveChangesAsync();
+            return new ChecklistItemDto { Id = entity.Id, Name = entity.Name, IsCompleted = entity.IsCompleted, TravelId = entity.TravelId };
+        }
+
+        public async Task<bool> DeleteChecklistItemAsync(int id)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var entity = await db.ChecklistItems.FindAsync(id);
+            if (entity == null) return false;
+            db.ChecklistItems.Remove(entity);
+            await db.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

@@ -121,5 +121,59 @@ namespace BackendAPI.Controllers
             dto.TravelId = travelId;
             return Ok(await _travelService.CreateExpenseAsync(dto));
         }
+
+        [HttpPut("destinations/{id}")]
+        public async Task<IActionResult> UpdateDestination(int id, DestinationDto dto)
+        { 
+            dto.Id = id; return Ok(await _travelService.UpdateDestinationAsync(dto)); 
+        }
+
+        [HttpDelete("destinations/{id}")]
+        public async Task<IActionResult> DeleteDestination(int id)
+        {
+            return await _travelService.DeleteDestinationAsync(id) ? NoContent() : NotFound();
+        }
+
+        [HttpPut("activities/{id}")]
+        public async Task<IActionResult> UpdateActivity(int id, ActivityDto dto)
+        {
+            dto.Id = id; return Ok(await _travelService.UpdateActivityAsync(dto));
+        }
+
+        [HttpDelete("activities/{id}")]
+        public async Task<IActionResult> DeleteActivity(int id)
+        { 
+            return await _travelService.DeleteActivityAsync(id) ? NoContent() : NotFound();
+        }
+
+        [HttpPut("expenses/{id}")]
+        public async Task<IActionResult> UpdateExpense(int id, ExpenseDto dto)
+        {
+            dto.Id = id; return Ok(await _travelService.UpdateExpenseAsync(dto));
+        }
+
+        [HttpDelete("expenses/{id}")]
+        public async Task<IActionResult> DeleteExpense(int id)
+        {
+            return await _travelService.DeleteExpenseAsync(id) ? NoContent() : NotFound();
+        }
+
+        [HttpGet("{travelId}/budget-summary")]
+        public async Task<IActionResult> GetBudgetSummary(int travelId) => 
+            Ok(await _travelService.GetBudgetSummaryAsync(travelId));
+
+        [HttpGet("{travelId}/checklist")]
+        public async Task<IActionResult> GetChecklist(int travelId) => Ok(await _travelService.GetChecklistAsync(travelId));
+
+        [HttpPost("{travelId}/checklist")]
+        public async Task<IActionResult> AddChecklistItem(int travelId, ChecklistItemDto dto)
+        { dto.TravelId = travelId; return Ok(await _travelService.CreateChecklistItemAsync(dto)); }
+
+        [HttpPut("checklist/{id}/toggle")]
+        public async Task<IActionResult> ToggleChecklistItem(int id) => Ok(await _travelService.ToggleChecklistItemAsync(id));
+
+        [HttpDelete("checklist/{id}")]
+        public async Task<IActionResult> DeleteChecklistItem(int id) =>
+            await _travelService.DeleteChecklistItemAsync(id) ? NoContent() : NotFound();
     }
 }

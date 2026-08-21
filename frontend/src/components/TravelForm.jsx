@@ -39,43 +39,24 @@ export default function TravelForm({ onCreate }) {
         <form onSubmit={handleSubmit} className="travel-form">
             <h3>Novo putovanje</h3>
             {error && <p className="form-error">{error}</p>}
-            <input
-                type="text"
-                name="name"
-                placeholder="Naziv putovanja"
-                value={formData.name}
-                onChange={handleChange}
-                required
-            />
-            <textarea
-                name="description"
-                placeholder="Opis"
-                value={formData.description}
-                onChange={handleChange}
-            />
-            <label>
-                Pocetak:
+            <label>Naziv putovanja
+                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+            </label>
+            <label>Opis
+                <textarea name="description" value={formData.description} onChange={handleChange} />
+            </label>
+            <label>Pocetak
                 <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} required />
             </label>
-            <label>
-                Kraj:
+            <label>Kraj
                 <input type="date" name="endDate" value={formData.endDate} onChange={handleChange} required />
             </label>
-            <input
-                type="number"
-                name="budget"
-                placeholder="Budzet"
-                value={formData.budget}
-                onChange={handleChange}
-                min="0"
-                required
-            />
-            <textarea
-                name="notes"
-                placeholder="Napomene"
-                value={formData.notes}
-                onChange={handleChange}
-            />
+            <label>Budzet (RSD)
+                <input type="number" name="budget" value={formData.budget} onChange={handleChange} min="0" required />
+            </label>
+            <label>Napomene
+                <textarea name="notes" value={formData.notes} onChange={handleChange} />
+            </label>
             <button type="submit">Kreiraj</button>
         </form>
     );

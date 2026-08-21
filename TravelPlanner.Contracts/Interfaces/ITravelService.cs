@@ -31,5 +31,13 @@ namespace TravelPlanner.Contracts.Interfaces
         Task<ExpenseDto> CreateExpenseAsync(ExpenseDto expense);
         Task<ExpenseDto> UpdateExpenseAsync(ExpenseDto expense);
         Task<bool> DeleteExpenseAsync(int expenseId);
+
+        Task<BudgetSummaryDto> GetBudgetSummaryAsync(int travelId);
+
+        // Checklist CRUD
+        Task<List<ChecklistItemDto>> GetChecklistAsync(int travelId);
+        Task<ChecklistItemDto> CreateChecklistItemAsync(ChecklistItemDto dto);
+        Task<ChecklistItemDto> ToggleChecklistItemAsync(int id);
+        Task<bool> DeleteChecklistItemAsync(int id);
     }
 }

@@ -74,5 +74,21 @@ namespace AuthService.Services
             Email = user.Email,
             Role = user.Role
         };
+
+        public async Task<List<UserDto>> GetAllUsersAsync()
+        {
+            using var db = new AuthDbContext(_dbOptions);
+            return await db.Users.Select(u => new UserDto { Id = u.Id, Name = u.Name, Email = u.Email, Role = u.Role }).ToListAsync();
+        }
+
+        public async Task<bool> DeleteUserAsync(int userId)
+        {
+            using var db = new AuthDbContext(_dbOptions);
+            var user = await db.Users.FindAsync(userId);
+            if (user == null) return false;
+            db.Users.Remove(user);
+            await db.SaveChangesAsync();
+            return true;
+        }
     }
 }

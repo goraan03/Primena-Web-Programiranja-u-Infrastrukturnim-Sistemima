@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 
-namespace BackendAPI.Data.Entities
+namespace TravelService.Data.Entities
 {
     [Table("Travels")]
     public class Travel

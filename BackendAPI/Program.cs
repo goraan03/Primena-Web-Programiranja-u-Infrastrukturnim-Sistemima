@@ -1,23 +1,21 @@
-using System;
-using System.Diagnostics;
-using System.Threading;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
-using Microsoft.ServiceFabric.Data;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Fabric;
 using System.IO;
-using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using BackendAPI.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace BackendAPI
 {
@@ -38,7 +36,6 @@ namespace BackendAPI
 
                         var builder = WebApplication.CreateBuilder();
 
-                        // Configure Kestrel
                         builder.Services.AddSingleton<StatelessServiceContext>(serviceContext);
                         builder.WebHost
                             .UseKestrel()
@@ -46,18 +43,45 @@ namespace BackendAPI
                             .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                             .UseUrls(url);
 
-                        // Add services to the container
-                        builder.Services.AddDbContext<AppDbContext>(options =>
-                        options.UseSqlServer(
-                            "Server=localhost\\SQLEXPRESS;Database=TravelPlannerDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true;",
-                            sqlOptions => sqlOptions.EnableRetryOnFailure()
-                        ));
-
                         builder.Services.AddControllers();
                         builder.Services.AddEndpointsApiExplorer();
-                        builder.Services.AddSwaggerGen();
 
-                        // CORS configuration
+                        builder.Services.AddSwaggerGen(options =>
+                        {
+                            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                            {
+                                Description = "Unesi JWT token (bez reèi 'Bearer', samo sam token)",
+                                Name = "Authorization",
+                                In = ParameterLocation.Header,
+                                Type = SecuritySchemeType.Http,
+                                Scheme = "bearer",
+                                BearerFormat = "JWT"
+                            });
+
+                            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                            {
+                                [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
+                            });
+                        });
+
+                        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                            .AddJwtBearer(options =>
+                            {
+                                options.TokenValidationParameters = new TokenValidationParameters
+                                {
+                                    ValidateIssuer = true,
+                                    ValidateAudience = true,
+                                    ValidateLifetime = true,
+                                    ValidateIssuerSigningKey = true,
+                                    ValidIssuer = "TravelPlannerAPI",
+                                    ValidAudience = "TravelPlannerClient",
+                                    IssuerSigningKey = new SymmetricSecurityKey(
+                                        Encoding.UTF8.GetBytes("YourSuperSecretKeyThatIsAtLeast32CharactersLong!"))
+                                };
+                            });
+
+                        builder.Services.AddAuthorization();
+
                         builder.Services.AddCors(options =>
                         {
                             options.AddPolicy("AllowAll", policy =>
@@ -70,7 +94,6 @@ namespace BackendAPI
 
                         var app = builder.Build();
 
-                        // Configure the HTTP request pipeline
                         if (app.Environment.IsDevelopment())
                         {
                             app.UseSwagger();
@@ -78,6 +101,7 @@ namespace BackendAPI
                         }
 
                         app.UseCors("AllowAll");
+                        app.UseAuthentication();
                         app.UseAuthorization();
                         app.MapControllers();
 

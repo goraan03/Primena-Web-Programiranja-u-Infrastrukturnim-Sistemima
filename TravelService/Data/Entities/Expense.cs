@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BackendAPI.Data.Entities
+namespace TravelService.Data.Entities
 {
     [Table("Expenses")]
     public class Expense

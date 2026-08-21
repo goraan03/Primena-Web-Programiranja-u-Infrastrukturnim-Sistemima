@@ -4,11 +4,9 @@
                  xmlns="http://schemas.microsoft.com/2011/01/fabric"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <ServiceTypes>
-    <!-- This is the name of your ServiceType. 
-         This name must match the string used in RegisterServiceType call in Program.cs. -->
-    <StatefulServiceType ServiceTypeName="TravelServiceType" HasPersistedState="true" />
-  </ServiceTypes>
+	<ServiceTypes>
+		<StatelessServiceType ServiceTypeName="TravelServiceType" />
+	</ServiceTypes>
 
   <!-- Code package is your service executable. -->
   <CodePackage Name="Code" Version="1.0.0">
@@ -33,7 +31,6 @@
       <!-- This endpoint is used by the replicator for replicating the state of your service.
            This endpoint is configured through a ReplicatorSettings config section in the Settings.xml
            file under the ConfigPackage. -->
-      <Endpoint Name="ReplicatorEndpoint" />
     </Endpoints>
   </Resources>
 </ServiceManifest>

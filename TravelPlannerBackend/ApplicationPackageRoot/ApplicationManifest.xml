@@ -3,8 +3,7 @@
   <Parameters>
     <Parameter Name="BackendAPI_InstanceCount" DefaultValue="-1" />
     <Parameter Name="AuthService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="TravelService_MinReplicaSetSize" DefaultValue="1" />
-    <Parameter Name="TravelService_TargetReplicaSetSize" DefaultValue="1" />
+    <Parameter Name="TravelService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="NotificationService_MinReplicaSetSize" DefaultValue="1" />
     <Parameter Name="NotificationService_TargetReplicaSetSize" DefaultValue="1" />
   </Parameters>
@@ -32,9 +31,9 @@
       </StatelessService>
     </Service>
     <Service Name="TravelService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatefulService ServiceTypeName="TravelServiceType" TargetReplicaSetSize="[TravelService_TargetReplicaSetSize]" MinReplicaSetSize="[TravelService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="1" LowKey="0" HighKey="100" />
-      </StatefulService>
+      <StatelessService ServiceTypeName="TravelServiceType" InstanceCount="[TravelService_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
     </Service>
     <Service Name="NotificationService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="NotificationServiceType" TargetReplicaSetSize="[NotificationService_TargetReplicaSetSize]" MinReplicaSetSize="[NotificationService_MinReplicaSetSize]">

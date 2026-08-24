@@ -352,5 +352,74 @@ namespace TravelService.Services
             return true;
         }
 
+        public async Task<ShareTokenDto> CreateShareTokenAsync(CreateShareTokenDto dto)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var entity = new Data.Entities.ShareToken
+            {
+                Token = Guid.NewGuid().ToString("N"),
+                TravelId = dto.TravelId,
+                AccessType = dto.AccessType,
+                ExpiresAt = DateTime.UtcNow.AddDays(dto.ExpiresInDays),
+                IsActive = true
+            };
+            db.ShareTokens.Add(entity);
+            await db.SaveChangesAsync();
+            return ToShareDto(entity);
+        }
+
+        public async Task<TravelDto> GetTravelByShareTokenAsync(string token)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var share = await ValidTokenAsync(db, token);
+            var travel = await db.Travels.FindAsync(share.TravelId);
+            return ToDto(travel);
+        }
+
+        public async Task<TravelDto> UpdateTravelByShareTokenAsync(string token, TravelDto dto)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var share = await ValidTokenAsync(db, token);
+            if (share.AccessType != "EDIT")
+                throw new UnauthorizedAccessException("Ovaj link dozvoljava samo pregled.");
+
+            var travel = await db.Travels.FindAsync(share.TravelId);
+            Validate(dto);
+            travel.Name = dto.Name; travel.Description = dto.Description;
+            travel.StartDate = dto.StartDate; travel.EndDate = dto.EndDate;
+            travel.Budget = dto.Budget; travel.Notes = dto.Notes;
+
+            await db.SaveChangesAsync();
+            return ToDto(travel);
+        }
+
+        public async Task<bool> RevokeShareTokenAsync(string token)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var share = await db.ShareTokens.SingleOrDefaultAsync(s => s.Token == token);
+            if (share == null) return false;
+            share.IsActive = false;
+            await db.SaveChangesAsync();
+            return true;
+        }
+
+        private static async Task<Data.Entities.ShareToken> ValidTokenAsync(TravelDbContext db, string token)
+        {
+            var share = await db.ShareTokens.SingleOrDefaultAsync(s => s.Token == token);
+            if (share == null || !share.IsActive || share.ExpiresAt < DateTime.UtcNow)
+                throw new UnauthorizedAccessException("Link za deljenje nije važeći ili je istekao.");
+            return share;
+        }
+
+        private static ShareTokenDto ToShareDto(Data.Entities.ShareToken s) => new ShareTokenDto
+        {
+            Id = s.Id,
+            Token = s.Token,
+            TravelId = s.TravelId,
+            AccessType = s.AccessType,
+            ExpiresAt = s.ExpiresAt,
+            IsActive = s.IsActive
+        };
+
     }
 }

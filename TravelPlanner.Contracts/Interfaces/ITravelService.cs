@@ -39,5 +39,11 @@ namespace TravelPlanner.Contracts.Interfaces
         Task<ChecklistItemDto> CreateChecklistItemAsync(ChecklistItemDto dto);
         Task<ChecklistItemDto> ToggleChecklistItemAsync(int id);
         Task<bool> DeleteChecklistItemAsync(int id);
+
+        // Share Token CRUD
+        Task<ShareTokenDto> CreateShareTokenAsync(CreateShareTokenDto dto);
+        Task<TravelDto> GetTravelByShareTokenAsync(string token);
+        Task<TravelDto> UpdateTravelByShareTokenAsync(string token, TravelDto dto);
+        Task<bool> RevokeShareTokenAsync(string token);
     }
 }

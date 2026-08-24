@@ -99,7 +99,3 @@ UPDATE Users SET Role = 'ADMIN' WHERE Email = 'tvoj@mejl.com';
 - Izvoz plana putovanja u PDF
 - Validacije: krajnji datum ne može biti pre početnog, budžet ne može biti negativan, email format, dužina lozinke
 - Cascade brisanje povezanih entiteta: brisanje putovanja briše destinacije/aktivnosti/troškove/checklist/share tokene (SQL FK cascade); brisanje korisnika briše njegova putovanja preko cross-service Remoting poziva
-
-## Napomena o migracijama
-
-`AuthService` i `TravelService` imaju sopstvene EF Core migracije (`Migrations/` folder u svakom projektu), svaki nad svojom bazom (`UsersDB`, `TravelPlannerDB`).

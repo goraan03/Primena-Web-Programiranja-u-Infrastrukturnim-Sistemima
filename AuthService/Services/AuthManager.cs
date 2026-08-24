@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AuthService.Data;
+﻿using AuthService.Data;
 using AuthService.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
+using Microsoft.ServiceFabric.Services.Remoting.V2;
+using Microsoft.ServiceFabric.Services.Remoting.V2.FabricTransport.Client;
 using TravelPlanner.Contracts.Interfaces;
 using TravelPlanner.Contracts.Models;
 
@@ -86,6 +89,20 @@ namespace AuthService.Services
             using var db = new AuthDbContext(_dbOptions);
             var user = await db.Users.FindAsync(userId);
             if (user == null) return false;
+
+            try
+            {
+                var serializationProvider = new ServiceRemotingDataContractSerializationProvider();
+                var clientFactory = new FabricTransportServiceRemotingClientFactory(serializationProvider: serializationProvider);
+                var proxyFactory = new ServiceProxyFactory(c => clientFactory);
+                var travelService = proxyFactory.CreateServiceProxy<ITravelService>(new Uri("fabric:/TravelPlannerBackend/TravelService"));
+                await travelService.DeleteTravelsByUserIdAsync(userId);
+            }
+            catch
+            {
+                
+            }
+
             db.Users.Remove(user);
             await db.SaveChangesAsync();
             return true;

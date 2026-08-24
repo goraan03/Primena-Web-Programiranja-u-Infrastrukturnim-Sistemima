@@ -13,6 +13,7 @@ namespace TravelPlanner.Contracts.Interfaces
         Task<TravelDto> CreateTravelAsync(TravelDto travel);
         Task<TravelDto> UpdateTravelAsync(TravelDto travel);
         Task<bool> DeleteTravelAsync(int travelId);
+        Task<int> DeleteTravelsByUserIdAsync(int userId);
 
         // Destination CRUD
         Task<List<DestinationDto>> GetDestinationsAsync(int travelId);
@@ -45,5 +46,9 @@ namespace TravelPlanner.Contracts.Interfaces
         Task<TravelDto> GetTravelByShareTokenAsync(string token);
         Task<TravelDto> UpdateTravelByShareTokenAsync(string token, TravelDto dto);
         Task<bool> RevokeShareTokenAsync(string token);
+        Task<ShareTokenDto> GetShareTokenInfoAsync(string token);
+
+        //Admin
+        Task<List<TravelDto>> GetAllTravelsForAdminAsync();
     }
 }

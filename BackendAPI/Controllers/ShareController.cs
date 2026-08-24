@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using QRCoder;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
 using Microsoft.ServiceFabric.Services.Remoting.V2;
@@ -27,13 +28,27 @@ namespace BackendAPI.Controllers
         public async Task<IActionResult> CreateShareToken(int travelId, CreateShareTokenDto dto)
         {
             dto.TravelId = travelId;
-            return Ok(await _travelService.CreateShareTokenAsync(dto));
+            var result = await _travelService.CreateShareTokenAsync(dto);
+
+            var shareUrl = $"http://localhost:5173/share/{result.Token}";
+
+            using var qrGenerator = new QRCodeGenerator();
+            var qrData = qrGenerator.CreateQrCode(shareUrl, QRCodeGenerator.ECCLevel.Q);
+            using var qrCode = new PngByteQRCode(qrData);
+            var qrBase64 = Convert.ToBase64String(qrCode.GetGraphic(20));
+
+            return Ok(new { token = result.Token, accessType = result.AccessType, expiresAt = result.ExpiresAt, shareUrl, qrCode = qrBase64 });
         }
 
         [HttpGet("{token}")]
         public async Task<IActionResult> GetByToken(string token)
         {
-            try { return Ok(await _travelService.GetTravelByShareTokenAsync(token)); }
+            try
+            {
+                var travel = await _travelService.GetTravelByShareTokenAsync(token);
+                var info = await _travelService.GetShareTokenInfoAsync(token);
+                return Ok(new { accessType = info.AccessType, travel });
+            }
             catch (Exception ex) { return NotFound(new { error = ex.InnerException?.Message ?? ex.Message }); }
         }
 

@@ -85,6 +85,15 @@ namespace TravelService.Services
             return true;
         }
 
+        public async Task<int> DeleteTravelsByUserIdAsync(int userId)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var travels = await db.Travels.Where(t => t.UserId == userId).ToListAsync();
+            db.Travels.RemoveRange(travels); // SQL cascade i dalje briše Destinations/Activities/Expenses/Checklist/ShareTokens
+            await db.SaveChangesAsync();
+            return travels.Count;
+        }
+
         // ---------- Destination ----------
 
         public async Task<List<DestinationDto>> GetDestinationsAsync(int travelId)
@@ -420,6 +429,20 @@ namespace TravelService.Services
             ExpiresAt = s.ExpiresAt,
             IsActive = s.IsActive
         };
+
+        public async Task<ShareTokenDto> GetShareTokenInfoAsync(string token)
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            var share = await ValidTokenAsync(db, token);
+            return ToShareDto(share);
+        }
+
+        // ---------- Checklist CRUD ----------
+        public async Task<List<TravelDto>> GetAllTravelsForAdminAsync()
+        {
+            using var db = new TravelDbContext(_dbOptions);
+            return await db.Travels.Select(t => ToDto(t)).ToListAsync();
+        }
 
     }
 }

@@ -13,13 +13,16 @@ namespace BackendAPI.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly ITravelService _travelService;
 
         public AdminController()
         {
             var serializationProvider = new ServiceRemotingDataContractSerializationProvider();
             var clientFactory = new FabricTransportServiceRemotingClientFactory(serializationProvider: serializationProvider);
             var proxyFactory = new ServiceProxyFactory(c => clientFactory);
+
             _authService = proxyFactory.CreateServiceProxy<IAuthService>(new Uri("fabric:/TravelPlannerBackend/AuthService"));
+            _travelService = proxyFactory.CreateServiceProxy<ITravelService>(new Uri("fabric:/TravelPlannerBackend/TravelService"));
         }
 
         [HttpGet("users")]
@@ -28,5 +31,8 @@ namespace BackendAPI.Controllers
         [HttpDelete("users/{id}")]
         public async Task<IActionResult> DeleteUser(int id) =>
             await _authService.DeleteUserAsync(id) ? NoContent() : NotFound();
+
+        [HttpGet("travel-plans")]
+        public async Task<IActionResult> GetAllTravelPlans() => Ok(await _travelService.GetAllTravelsForAdminAsync());
     }
 }

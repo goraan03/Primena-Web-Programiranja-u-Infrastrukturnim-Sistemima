@@ -9,7 +9,7 @@ namespace AuthService.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<AuthDbContext>();
             optionsBuilder.UseSqlServer(
-                "Server=localhost\\SQLEXPRESS;Database=TravelPlannerDB;Trusted_Connection=True;TrustServerCertificate=True;"
+                "Server=localhost\\SQLEXPRESS;Database=UsersDB;Trusted_Connection=True;TrustServerCertificate=True;"
             );
             return new AuthDbContext(optionsBuilder.Options);
         }

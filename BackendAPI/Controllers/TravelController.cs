@@ -26,6 +26,7 @@ namespace BackendAPI.Controllers
             _travelService = proxyFactory.CreateServiceProxy<ITravelService>(
                 new Uri("fabric:/TravelPlannerBackend/TravelService"));
             _notificationService = proxyFactory.CreateServiceProxy<INotificationService>(new Uri("fabric:/TravelPlannerBackend/NotificationService"));
+            _travelService = proxyFactory.CreateServiceProxy<ITravelService>(new Uri("fabric:/TravelPlannerBackend/TravelService"));
         }
 
         private int CurrentUserId =>
@@ -175,5 +176,8 @@ namespace BackendAPI.Controllers
         [HttpDelete("checklist/{id}")]
         public async Task<IActionResult> DeleteChecklistItem(int id) =>
             await _travelService.DeleteChecklistItemAsync(id) ? NoContent() : NotFound();
+
+        [HttpGet("travel-plans")]
+        public async Task<IActionResult> GetAllTravelPlans() => Ok(await _travelService.GetAllTravelsForAdminAsync());
     }
 }

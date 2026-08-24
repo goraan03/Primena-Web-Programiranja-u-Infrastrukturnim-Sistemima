@@ -3,6 +3,7 @@ import travelApi from '../api/travelApi';
 import TravelForm from '../components/TravelForm';
 import TravelList from '../components/TravelList';
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function TravelsPage() {
     const [travels, setTravels] = useState([]);
@@ -45,10 +46,14 @@ export default function TravelsPage() {
     };
 
     return (
+
         <div className="container">
             <header className="app-header">
                 <h1>Moja putovanja {user ? `- ${user.name}` : ''}</h1>
-                <button onClick={logout}>Odjavi se</button>
+                <div>
+                    {user?.role === 'ADMIN' && <Link to="/admin" style={{ marginRight: 12 }}>Admin panel</Link>}
+                    <button onClick={logout}>Odjavi se</button>
+                </div>
             </header>
 
             <TravelForm onCreate={handleCreate} />

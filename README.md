@@ -8,7 +8,7 @@ Aplikacija omogućava korisnicima kreiranje planova putovanja, upravljanje desti
 
 ## Arhitektura sistema
 
-Vidi `architecture-diagram.svg`.
+![Arhitektura sistema](architecture-diagram.svg)
 
 Sistem se sastoji od četiri Service Fabric servisa i React frontend-a. Svaki servis koji poseduje podatke ima **sopstveno, odvojeno skladište** — princip da servisi ne dele bazu:
 
@@ -21,7 +21,7 @@ Brisanje korisnika (AuthService) automatski briše i sva njegova putovanja (Trav
 
 ## Use Case dijagram
 
-Vidi `usecase-diagram.svg`. Sistem ima dve uloge — **Korisnik** (upravljanje sopstvenim planovima putovanja) i **Admin** (nasleđuje sve funkcionalnosti Korisnika, uz dodatna ovlašćenja pregleda i brisanja korisničkih naloga i uvida u sva putovanja u sistemu).
+![Use Case dijagram](usecase-diagram.svg). Sistem ima dve uloge — **Korisnik** (upravljanje sopstvenim planovima putovanja) i **Admin** (nasleđuje sve funkcionalnosti Korisnika, uz dodatna ovlašćenja pregleda i brisanja korisničkih naloga i uvida u sva putovanja u sistemu).
 
 ## Tehnički stack
 

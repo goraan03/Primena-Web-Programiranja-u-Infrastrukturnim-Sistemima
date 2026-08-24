@@ -1,0 +1,68 @@
+<svg width="800" height="640" viewBox="0 0 800 640" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="800" height="640" fill="#ffffff"/>
+  <text x="400" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#5b21b6">TravelPlanner — Arhitektura sistema</text>
+
+  <rect x="300" y="55" width="200" height="55" rx="8" fill="#ede9fe" stroke="#6d28d9" stroke-width="1.5"/>
+  <text x="400" y="78" text-anchor="middle" font-size="13" font-weight="bold">React klijent</text>
+  <text x="400" y="95" text-anchor="middle" font-size="11" fill="#4b5563">Vite, axios, Context API</text>
+
+  <line x1="400" y1="110" x2="400" y2="145" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="470" y="132" font-size="11" fill="#4b5563">HTTP + JWT</text>
+
+  <rect x="230" y="147" width="340" height="55" rx="8" fill="#e0e7ff" stroke="#4338ca" stroke-width="1.5"/>
+  <text x="400" y="170" text-anchor="middle" font-size="13" font-weight="bold">BackendAPI — Gateway (Stateless)</text>
+  <text x="400" y="188" text-anchor="middle" font-size="11" fill="#4b5563">Kestrel, JWT validacija, kontroleri, Swagger</text>
+
+  <line x1="330" y1="202" x2="150" y2="245" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="400" y1="202" x2="400" y2="245" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="202" x2="650" y2="245" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="180" y="225" font-size="10" fill="#4b5563">SF Remoting</text>
+
+  <rect x="40" y="247" width="220" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="150" y="270" text-anchor="middle" font-size="13" font-weight="bold">AuthService</text>
+  <text x="150" y="288" text-anchor="middle" font-size="10" fill="#4b5563">Stateless — Users, JWT, BCrypt</text>
+  <text x="150" y="300" text-anchor="middle" font-size="10" fill="#4b5563">Admin upravljanje nalozima</text>
+
+  <rect x="290" y="247" width="220" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="400" y="266" text-anchor="middle" font-size="13" font-weight="bold">TravelService</text>
+  <text x="400" y="282" text-anchor="middle" font-size="10" fill="#4b5563">Stateless — Travels, Destinations,</text>
+  <text x="400" y="295" text-anchor="middle" font-size="10" fill="#4b5563">Activities, Expenses, Checklist, Share</text>
+
+  <rect x="540" y="247" width="220" height="60" rx="8" fill="#fee2e2" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="650" y="270" text-anchor="middle" font-size="13" font-weight="bold">NotificationService</text>
+  <text x="650" y="288" text-anchor="middle" font-size="10" fill="#4b5563">Stateful — Reliable Dictionary</text>
+  <text x="650" y="300" text-anchor="middle" font-size="10" fill="#4b5563">Istorija poslatih notifikacija</text>
+
+  <line x1="150" y1="307" x2="150" y2="345" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="400" y1="307" x2="400" y2="345" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="347" width="220" height="55" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="150" y="370" text-anchor="middle" font-size="12" font-weight="bold">SQL Server — UsersDB</text>
+  <text x="150" y="388" text-anchor="middle" font-size="10" fill="#4b5563">sopstvena baza, samo Users</text>
+
+  <rect x="290" y="347" width="220" height="55" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="400" y="370" text-anchor="middle" font-size="12" font-weight="bold">SQL Server — TravelPlannerDB</text>
+  <text x="400" y="388" text-anchor="middle" font-size="10" fill="#4b5563">sopstvena baza, Travel tabele</text>
+
+  <rect x="540" y="347" width="220" height="55" rx="8" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="650" y="370" text-anchor="middle" font-size="12" font-weight="bold">Reliable Collections</text>
+  <text x="650" y="388" text-anchor="middle" font-size="10" fill="#4b5563">u okviru SF klastera</text>
+
+  <line x1="150" y1="345" x2="400" y2="345" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="275" y="420" text-anchor="middle" font-size="10" fill="#9ca3af">isprekidana linija: AuthService.DeleteUser poziva</text>
+  <text x="275" y="432" text-anchor="middle" font-size="10" fill="#9ca3af">TravelService.DeleteTravelsByUserId preko Remoting-a</text>
+
+  <rect x="40" y="450" width="14" height="14" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="60" y="461" font-size="11">Stateless servis</text>
+  <rect x="180" y="450" width="14" height="14" fill="#fee2e2" stroke="#b91c1c"/>
+  <text x="200" y="461" font-size="11">Stateful servis</text>
+
+  <text x="400" y="500" text-anchor="middle" font-size="11" fill="#4b5563">Svaki servis koji poseduje podatke ima sopstveno, odvojeno skladište — princip da servisi ne dele bazu.</text>
+  <text x="400" y="518" text-anchor="middle" font-size="11" fill="#4b5563">BackendAPI (gateway) ne poseduje podatke. Komunikacija ide isključivo preko Service Fabric Remoting-a (V2_1).</text>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#4b5563"/>
+    </marker>
+  </defs>
+</svg>

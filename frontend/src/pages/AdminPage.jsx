@@ -48,7 +48,7 @@ export default function AdminPage() {
           {plans.map((p) => (
             <li key={p.id}>
               <span><strong>{p.name}</strong> - {p.startDate?.slice(0, 10)} do {p.endDate?.slice(0, 10)} (korisnik #{p.userId})</span>
-              <Link to={`/travels/${p.id}`}>Otvori</Link>
+                  <Link to={`/travels/${p.id}`} className="btn-secondary btn-link" style={{ color: 'var(--gray-700)' }}>Otvori</Link>
             </li>
           ))}
         </ul>

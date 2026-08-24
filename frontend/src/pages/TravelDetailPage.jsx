@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import travelApi from '../api/travelApi';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -35,6 +35,7 @@ function ActivityCalendar({ travel, activities }) {
 
 export default function TravelDetailPage() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [tab, setTab] = useState('overview');
     const [travel, setTravel] = useState(null);
     const [destinations, setDestinations] = useState([]);
@@ -160,7 +161,7 @@ export default function TravelDetailPage() {
 
     return (
         <div className="container">
-            <Link to="/travels">&larr; Nazad na listu</Link>
+            <button className="btn-back" onClick={() => navigate(-1)}>&larr; Nazad</button>
             <header className="app-header">
                 <h1>{travel.name}</h1>
                 <div className="btn-group">
